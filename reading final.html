@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text with Quiz</title>
+    <style id="customStyles">
+    </style>
+</head>
+<body>
+
+    <div class="information" id="infosection">   <!-- https://walopcexpert.blogspot.com -->
+        <h1>Student Information</h1>
+        <form>
+            <div class="form-group">
+                <label for="lrn">LRN</label>
+                <input type="text" id="lrn" name="lrn" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 15);" >
+            </div>
+            <div class="form-group">   <!-- https://walopcexpert.blogspot.com -->
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="Elementary">Elementary</option>
+                    <option value="Secondary">Secondary</option>
+                    <option value="Integrated">Integrated</option>  
+                </select>
+            </div>
+            <div class="form-group">   <!-- https://walopcexpert.blogspot.com -->
+                <label for="district">District</label>
+                <select id="district" name="district">
+                    <option value="Subic">Subic</option>
+                    <option value="Castillejos">Castillejos</option>
+                    <option value="San Marcelino">San Marcelino</option>
+                    <option value="San Antonio">San Antonio</option>
+                    <option value="San Narciso">San Narciso</option>
+                    <option value="San Felipe">San Felipe</option>
+                    <option value="Cabangan">Cabangan</option>
+                    <option value="Botolan">Botolan South</option>
+                    <option value="Botolan">Botolan North</option>
+                    <option value="Iba">Iba</option>
+                    <option value="Palauig">Palauig</option>
+                    <option value="Masinloc">Masinloc</option>
+                    <option value="Candelaria">Candelaria</option>
+                    <option value="Santa Cruz">Santa Cruz South</option>
+                    <option value="Santa Cruz">Santa Cruz North</option>
+                </select>
+            </div>
+            <div class="form-group">   <!-- https://walopcexpert.blogspot.com -->
+                <label for="school-id">School ID</label>
+                <input type="text" id="schlid" name="school-id" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+            </div>
+            <div class="form-group">   <!-- https://walopcexpert.blogspot.com -->
+                <label for="grade-level">Grade Level</label>
+                <select id="gradelvl" name="grade-level">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="form-group">   <!-- https://walopcexpert.blogspot.com -->
+                <label for="section">Section</label>
+                <input type="text" id="section" name="section">
+            </div>
+            <div class="form-group">
+                <label for="sex" style="margin-right: 10px;">Sex</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="sex" value="male"> Male</label>
+                    <label><input type="radio" name="sex" value="female"> Female</label>
+                </div>
+            </div>
+            <br>
+            <button type="button" style="display: block; margin: 0 auto;" onclick="Save()">Enter</button>
+        </form>
+    </div>
+    <br>
+  <div id="short_story" class="story">
+    <h2>Levy's Story</h2>   <!-- https://walopcexpert.blogspot.com -->
+    <p>The train whistle shrieked, a haunting echo in Levy's memory. He remembered the searing pain, the agonizing silence that followed. His legs, once sturdy pillars of his life, were gone. His wife, unable to bear the weight of his disability, had left. The world, once vibrant, now seemed to shrink, confining him to a wheelchair, a prisoner in his own home.
+        But Levy refused to be defined by his limitations. He clung to the hope that his suffering could have meaning. He saw the fear in the eyes of others facing adversity, the way they retreated into themselves, believing their lives were over. He knew he had to do something. He would share his story, not as a tale of woe, but as a testament to the indomitable human spirit. He would show them that even when life throws you a curveball, you can still find joy, purpose, and even triumph.
+        He began speaking at local schools, sharing his journey with raw honesty and unwavering optimism. He emphasized the importance of inner strength, of refusing to let adversity define you. He spoke about the unwavering support of his family and friends, a constant source of love and encouragement that had buoyed him through the darkest times.
+        His message resonated deeply. People were inspired by his resilience, his unwavering belief in himself, and his determination to live a fulfilling life despite his disabilities. He became a symbol of hope, a reminder that even in the face of unimaginable challenges, the human spirit could not be broken.
+        
+        Levy's story proved that true strength lay not in physical prowess, but in the unwavering will to overcome adversity. It was a testament to the power of human connection, the importance of support systems, and the enduring capacity of the human spirit to find joy and purpose even in the darkest of times.
+</p>
+  </div>
+  <div id="bcontrols" class="controls">   <!-- https://walopcexpert.blogspot.com -->
+    <button onclick="runSpeechRecog()">Speech</button>
+    <button onclick="stopSpeechRecog()">Finish</button>
+    <button onclick="takeQuiz()">Take Quiz</button> </div>
+  <br>   <!-- https://walopcexpert.blogspot.com -->
+  <div id="ctext" class="speech-to-text">
+    <h2>Converted Text</h2>
+    <p id="output"></p>
+    <p id="timeParagraph"><strong>Time:</strong> 0 seconds</p>
+    <p id="sentence-count"><strong>Correct Sentences:</strong>  0</p>
+    <p id="original-word-count"><strong>Original Word Count:</strong>  0</p>
+    <p id="correct-word-count"><strong>Correct Word Count:</strong>  0</p>
+    <p id="correct-words"><strong>Correct Words:</strong> </p>
+    <p id="mispronounced-words"><strong>Mispronounced Word Count:</strong>  0</p>
+<p id="mispronounced-words-list"><strong>Mispronounced Words:</strong> </p>
+    <p id="wpm"><strong>WPM:</strong> 0</p>
+</div>
+   <!-- https://walopcexpert.blogspot.com -->
+<div class="quiz" id="quizSection"> 
+    <h2>Quiz on Levy's Story</h2>
+    <form id="quizForm">
+        <div id="question-container">
+            <!-- https://walopcexpert.blogspot.com -->
+        </div>
+        <button type="button" id="next-button" onclick="nextQuestion()">Next</button>
+        <button type="button" id="submit-button" onclick="submitQuiz()" style="display: none;">Results</button>
+    </form>
+</div>
+      
+<div id="qresults" class="qzresults">   <!-- https://walopcexpert.blogspot.com -->
+      <p id="quizResult" class="hide" style="text-align:center;"></p>
+      <button type="button" style="display: block; margin: 0 auto;" onclick="finish()">Save & Upload</button>  
+    </div>
+    <script>
+const base64CSS = "ICA6cm9vdCB7CiAgICAtLXByaW1hcnktY29sb3I6ICMwMGZmZjI7CiAgICAtLXNlY29uZGFyeS1jb2xvcjogIzA1NzVFNjsKICAgIC0tdGV4dC1jb2xvcjogI2UwZTBlMDsKICAgIC0tYmctbGlnaHQ6IHJnYmEoMjU1LCAyNTUsIDI1NSwgMC4wNSk7CiAgICAtLWJnLXdoaXRlOiByZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDgpOwogICAgLS1zaGFkb3ctc206IDAgNHB4IDhweCByZ2JhKDAsIDAsIDAsIDAuMyk7CiAgICAtLXNoYWRvdy1tZDogMCA4cHggMTZweCByZ2JhKDAsIDAsIDAsIDAuMzUpOwogICAgLS1zaGFkb3ctbGc6IDAgMTVweCAzNXB4IHJnYmEoMCwgMCwgMCwgMC40KTsKICAgIC0tYm9yZGVyLXJhZGl1cy1zbTogOHB4OwogICAgLS1ib3JkZXItcmFkaXVzLW1kOiAxMnB4OwogICAgLS1ib3JkZXItcmFkaXVzLWxnOiAyNHB4OwogICAgLS10cmFuc2l0aW9uLXNwZWVkOiAwLjRzOwogICAgLS1uZW9uLWdsb3c6IDAgMCAxMHB4IHJnYmEoMCwgMjU1LCAyNDIsIDAuNSksCiAgICAgICAgICAgICAgICAgMCAwIDIwcHggcmdiYSgwLCAyNTUsIDI0MiwgMC4zKSwKICAgICAgICAgICAgICAgICAwIDAgMzBweCByZ2JhKDAsIDI1NSwgMjQyLCAwLjEpOwp9CgogYm9keSB7CiAgICBmb250LWZhbWlseTogJ0FyaWFsJywgc2Fucy1zZXJpZjsKICAgIGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgxMzVkZWcsICMwMDA0MjggMCUsICMwMDRlOTIgMTAwJSk7CiAgICBtaW4taGVpZ2h0OiAxMDB2aDsKICAgIGRpc3BsYXk6IGJsb2NrOwoganVzdGlmeS1jb250ZW50OiBjZW50ZXI7CiAgICBhbGlnbi1pdGVtczogY2VudGVyOwogICAgY29sb3I6IHZhcigtLXRleHQtY29sb3IpOwogICAgcGVyc3BlY3RpdmU6IDE1MDBweDsKfQouaW5mb3JtYXRpb24gewogIHdpZHRoOiA0MDBweDsgLyogRGVmYXVsdCB3aWR0aCBmb3IgbGFyZ2VyIHNjcmVlbnMgKi8KICBtYXJnaW46IDAgYXV0bzsKICBwYWRkaW5nOiAxMHB4OwogIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7CiAgYm9yZGVyLXJhZGl1czogNXB4OwogIGJveC1zaGFkb3c6IDAgMnB4IDVweCByZ2JhKDAsIDAsIDAsIDAuMSk7CiAgcG9zaXRpb246IGFic29sdXRlOyAKICB0b3A6IDUwJTsgCiAgbGVmdDogNTAlOwogIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpOyAKfQoKQG1lZGlhIHNjcmVlbiBhbmQgKG1heC13aWR0aDogNjAwcHgpIHsgCiAgLmluZm9ybWF0aW9uLCAucXVpeiB7CiAgICB3aWR0aDogOTUlOyAvKiBBZGp1c3Qgd2lkdGggZm9yIHNtYWxsZXIgc2NyZWVucyAqLwogIH0KfQoKCkBtZWRpYSAocHJlZmVycy1jb2xvci1zY2hlbWU6IGRhcmspIHsKICAgIDpyb290IHsKICAgICAgICAtLXRleHQtY29sb3I6ICNmZmZmZmY7CiAgICAgICAgLS1iZy1saWdodDogIzJjMmMyYzsKICAgICAgICAtLWJnLXdoaXRlOiAjMWMxYzFjOwogICAgfQoKICAgIGlucHV0W3R5cGU9InRleHQiXSwKICAgIHNlbGVjdCB7CiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tYmctbGlnaHQpOwogICAgICAgIGNvbG9yOiB2YXIoLS10ZXh0LWNvbG9yKTsKICAgIH0KfQoKLmZvcm0tZ3JvdXAgewogIGRpc3BsYXk6IGZsZXg7IC8qIFVzZSBmbGV4Ym94IGZvciBob3Jpem9udGFsIGxheW91dCAqLwogIGFsaWduLWl0ZW1zOiBjZW50ZXI7IC8qIFZlcnRpY2FsbHkgY2VudGVyIGVsZW1lbnRzICovCiAgbWFyZ2luOiAxMHB4OwogIGNvbG9yOiB2YXIoLS1wcmltYXJ5LWNvbG9yKTsKICB0ZXh0LXNoYWRvdzogMCAwIDVweCB2YXIoLS1wcmltYXJ5LWNvbG9yKTsKfQoKbGFiZWwgewogIGZsZXg6IDAgMCAxMjBweDsgLyogU2V0IGEgZml4ZWQgd2lkdGggZm9yIGxhYmVscyAqLwogIG1hcmdpbi1yaWdodDogMTBweDsgCn0KCmlucHV0W3R5cGU9InRleHQiXSwKc2VsZWN0IHsKICB3aWR0aDogMTAwJTsKICBwYWRkaW5nOiAxMHB4OwogIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7CiAgYm9yZGVyLXJhZGl1czogM3B4Owp9CgoucmFkaW8tZ3JvdXAgewogIGRpc3BsYXk6IGZsZXg7CiAgZmxleC1kaXJlY3Rpb246IHJvdzsKfQoKLnJhZGlvLWdyb3VwIGxhYmVsIHsKICBtYXJnaW4tcmlnaHQ6IDE1cHg7Cn0KCgojYmNvbnRyb2xzIHsKICBkaXNwbGF5OiBub25lOwogIGFsaWduLWl0ZW1zOiBjZW50ZXI7CiAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7CiAgdGV4dC1hbGlnbjogY2VudGVyOyAKCn0KCmJ1dHRvbiB7CiAgICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIDAuNik7CiAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1wcmltYXJ5LWNvbG9yKTsKICAgIGNvbG9yOiB2YXIoLS1wcmltYXJ5LWNvbG9yKTsKICAgIHRleHQtc2hhZG93OiAwIDAgNXB4IHZhcigtLXByaW1hcnktY29sb3IpOwogICAgYm94LXNoYWRvdzogdmFyKC0tbmVvbi1nbG93KTsKICAgIHRyYW5zaXRpb246IGFsbCAwLjNzIGVhc2U7CiAgICBwYWRkaW5nOiAxMHB4IDIwcHg7IAogICAgYm9yZGVyLXJhZGl1czogM3B4OwogICAgZm9udC1zaXplOiBsYXJnZTsKICBjdXJzb3I6IHBvaW50ZXI7CiAgbWFyZ2luOiA1cHg7CiAgbWFyZ2luLXRvcDogMjBweDsKfQoKYnV0dG9uOmhvdmVyIHsKICAgIGJhY2tncm91bmQ6IHJnYmEoMCwgMjU1LCAyNDIsIDAuMSk7CiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoLTVweCkgdHJhbnNsYXRlWigxMHB4KTsKICAgIGJveC1zaGFkb3c6IDAgMCAxNXB4IHJnYmEoMCwgMjU1LCAyNDIsIDAuNSksCiAgICAgICAgICAgICAgICAwIDAgMzBweCByZ2JhKDAsIDI1NSwgMjQyLCAwLjMpLAogICAgICAgICAgICAgICAgMCAwIDQ1cHggcmdiYSgwLCAyNTUsIDI0MiwgMC4xKTsKfQoKaDEsIGgyLCBoMyB7CiAgICBtYXJnaW4tYm90dG9tOiAxLjVyZW07CiAgICBsaW5lLWhlaWdodDogMS4yOwp9CgpoMSB7CiAgICBjb2xvcjogdmFyKC0tcHJpbWFyeS1jb2xvcik7CiAgICBmb250LXNpemU6IGNsYW1wKDJyZW0sIDV2dywgMi41cmVtKTsKICAgIHRleHQtc2hhZG93OiAycHggMnB4IDRweCByZ2JhKDAsIDAsIDAsIDAuMSk7Cn0KCmgyIHsKICAgIGNvbG9yOiB2YXIoLS10ZXh0LWNvbG9yKTsKICAgIGZvbnQtc2l6ZTogY2xhbXAoMS41cmVtLCA0dncsIDJyZW0pOwp9Cgouc3RvcnksIC5zcGVlY2gtdG8tdGV4dCB7CiAgd2lkdGg6IDgwJTsgCiAgbWFyZ2luOiAwIGF1dG87IC8qIENlbnRlciBob3Jpem9udGFsbHkgKi8KICBwYWRkaW5nOiAyMHB4OwogIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7CiAgYm9yZGVyLXJhZGl1czogNXB4OwogIGJveC1zaGFkb3c6IDAgMnB4IDVweCByZ2JhKDAsIDAsIDAsIDAuMSk7Cn0KLnN0b3J5IGgyIHsKICAgdGV4dC1hbGlnbjogY2VudGVyOwp9Ci5zdG9yeSBwIHsKICAgIGZvbnQtc2l6ZTogMS4ycmVtOwp9Ci5xdWl6IHsKICB3aWR0aDogOTAlOyAKICBtYXJnaW46IDAgYXV0bzsgLyogQ2VudGVyIGhvcml6b250YWxseSAqLwogIHBhZGRpbmc6IDEwcHg7CiAgYm9yZGVyOiAxcHggc29saWQgI2NjYzsKICBib3JkZXItcmFkaXVzOiA1cHg7CiAgYm94LXNoYWRvdzogMCAycHggNXB4IHJnYmEoMCwgMCwgMCwgMC4xKTsKICBwb3NpdGlvbjogYWJzb2x1dGU7IAogIHRvcDogNTAlOyAKICBsZWZ0OiA1MCU7CiAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7IAp9Cgouc3BlZWNoLXRvLXRleHQgewogIHRleHQtYWxpZ246IGNlbnRlcjsKICBtYXJnaW4tYm90dG9tOiAxNXB4Owp9CgoucXVpeiBsYWJlbCB7CiAgZGlzcGxheTogYmxvY2s7Cn0KLnF6cmVzdWx0cywgLmhpZGUsIC5xdWl6LCAuc3RvcnksIC5zcGVlY2gtdG8tdGV4dCB7CiAgZGlzcGxheTogbm9uZTsKfQ==";
+const decodedCSS = atob(base64CSS);
+const styleElement = document.getElementById("customStyles");   //https:www.walopcexpert.blogspot.com 
+styleElement.textContent = decodedCSS;
+        function Save() {
+            // //https:www.walopcexpert.blogspot.com 
+            const lrn = document.getElementById("lrn").value.trim();
+            const district = document.getElementById("district").value;
+            const schlid = document.getElementById("schlid").value.trim();
+            const gradelvl = document.getElementById("gradelvl").value;
+            const section = document.getElementById("section").value.trim();
+            const category = document.getElementById("category").value.trim();
+            const sex = document.querySelector('input[name="sex"]:checked')?.value;
+        
+            let errorMessage = "";
+        
+            if (lrn.length !== 12 || !/^\d{12}$/.test(lrn)) {
+                errorMessage += "LRN must be exactly 12 digits.\n";
+            }
+            if (!category) {
+                errorMessage += "Please select a category.\n";
+            }
+            if (!district) {
+                errorMessage += "Please select a district.\n";
+            }
+            if (!schlid) {
+                errorMessage += "School ID is required.\n";
+            }
+            if (!gradelvl) {
+                errorMessage += "Please select a grade level.\n";
+            }
+            if (!section) {
+                errorMessage += "Section is required.\n";
+            }
+            if (!sex) {
+                errorMessage += "Please select a gender.\n";
+            }
+        
+            // //https:www.walopcexpert.blogspot.com 
+            if (errorMessage) {
+                alert(errorMessage);
+                return; // //https:www.walopcexpert.blogspot.com 
+            }
+        
+       //https:www.walopcexpert.blogspot.com 
+            document.getElementById('infosection').style.display = 'none'; 
+            document.getElementById('short_story').style.display = 'block';
+            document.getElementById('ctext').style.display = 'block';
+            document.getElementById('bcontrols').style.display = 'flex';
+        }
+        
+    //https:www.walopcexpert.blogspot.com 
+        function takeQuiz() {
+            document.getElementById('quizSection').style.display = 'block';
+            document.getElementById('quizResult').classList.add('hide');
+            document.getElementById('short_story').style.display = 'none'; 
+            document.getElementById('ctext').style.display = 'none'; 
+            document.getElementById('output').style.display = 'none'; 
+            document.getElementById('timeParagraph').style.display = 'none';
+            document.getElementById('bcontrols').style.display = 'none';  
+        }
+
+        let recognition;
+if ('webkitSpeechRecognition' in window) {
+    recognition = new window.webkitSpeechRecognition();
+} else if ('SpeechRecognition' in window) {
+    recognition = new window.SpeechRecognition();
+} else {
+    console.log('Speech recognition not supported');
+}
+
+recognition.continuous = true; 
+recognition.interimResults = false; 
+
+let isStopped = false;
+let wordCount = 0;
+let totalListeningTime = 0;
+let output = document.getElementById('output');
+let timerInterval; 
+let transcriptArray = []; 
+let lastProcessedResultIndex = -1; 
+
+
+let currentTranscript = "";
+let currentWordCount = 0;
+let currentTime = 0;
+let correctSentenceCount = 0;
+let originalWords = [];
+let correctWordCount = 0;
+let wordsPerMinute = 0;
+let totalWordCount = 0;
+
+
+function calculateWPM() {
+    const totalWords = correctWordCount; //https:www.walopcexpert.blogspot.com 
+    const totalTimeInMinutes = totalListeningTime / 60;
+    wordsPerMinute = totalTimeInMinutes > 0 ? Math.round(totalWords / totalTimeInMinutes) : 0;
+}
+
+
+function checkSentenceMatch() {
+    const originalText = document.getElementById('short_story').textContent;
+    const spokenText = currentTranscript;
+
+    const cleanOriginalText = originalText.replace(/[^a-zA-Z0-9\s.]/g, '').toLowerCase();
+    const cleanSpokenText = spokenText.replace(/[^a-zA-Z0-9\s]/g, '').toLowerCase();
+
+    const originalSentences = cleanOriginalText.split('. ');
+
+    correctSentenceCount = 0; 
+    correctWordCount = 0; 
+    miscueCount = 0;
+    originalWords = cleanOriginalText.split(/\s+/);
+
+    const spokenWords = cleanSpokenText.split(/\s+/);
+
+    correctWords = [];//https:www.walopcexpert.blogspot.com 
+    mispronouncedWords = []; //https:www.walopcexpert.blogspot.com 
+
+    for (let i = 0; i < spokenWords.length; i++) {
+        let isCorrect = false;
+
+        for (let j = 0; j < originalWords.length; j++) {
+            if (levenshteinDistance(spokenWords[i], originalWords[j]) <= 1) {
+                correctWordCount++;
+                correctWords.push(spokenWords[i]);//https:www.walopcexpert.blogspot.com 
+                isCorrect = true;
+                break;
+            }
+        }
+
+        if (!isCorrect) {
+            miscueCount++;
+            mispronouncedWords.push(spokenWords[i]); //https:www.walopcexpert.blogspot.com 
+            output.innerHTML += `<span class="mispronounced">${spokenWords[i]}</span> `; //https:www.walopcexpert.blogspot.com 
+        } else {
+            output.innerHTML += `${spokenWords[i]} `;
+        }
+    }
+
+//https:www.walopcexpert.blogspot.com 
+    const originalTextElement = document.getElementById('short_story');
+    const originalTextHTML = originalTextElement.innerHTML;
+    let highlightedText = originalTextHTML;
+
+    for (let word of mispronouncedWords) {
+        const regex = new RegExp(`\\b${word}\\b`, 'gi');
+        highlightedText = highlightedText.replace(regex, `<span style="background-color: yellow;">${word}</span>`);
+    }
+
+    originalTextElement.innerHTML = highlightedText;
+
+   //https:www.walopcexpert.blogspot.com 
+    for (let sentence of originalSentences) {
+        const sentenceWords = sentence.split(/\s+/);
+        const spokenSentenceWords = getSpokenSentenceWords(sentenceWords, spokenWords);
+
+        if (lcs(sentenceWords, spokenSentenceWords) === sentenceWords.length) {
+            correctSentenceCount++;
+        }
+    }
+    wordCount = spokenWords.length;
+    totalWordCount += wordCount; //https:www.walopcexpert.blogspot.com 
+    document.getElementById('sentence-count').textContent = `Correct Sentences: ${correctSentenceCount}`;
+    document.getElementById('correct-word-count').textContent = `Correct Word Count: ${correctWordCount}`;
+    document.getElementById('original-word-count').textContent = `Original Word Count: ${originalWords.length}`;
+    document.getElementById('mispronounced-words').textContent = `Mispronounced Word Count: ${mispronouncedWords.length}`;
+    document.getElementById('correct-words').textContent = `Correct Words: ${correctWords.join(', ')}`;
+    document.getElementById('mispronounced-words-list').textContent = `Mispronounced Words: ${mispronouncedWords.join(', ')}`;
+}
+//https:www.walopcexpert.blogspot.com 
+function getSpokenSentenceWords(sentenceWords, spokenWords) {
+    const spokenSentenceWords = [];
+
+    for (let word of sentenceWords) {
+        const index = spokenWords.findIndex((spokenWord) => levenshteinDistance(spokenWord, word) <= 2);
+
+        if (index !== -1) {
+            spokenSentenceWords.push(spokenWords[index]);
+            spokenWords.splice(index, 1);
+        }
+    }
+
+    return spokenSentenceWords;
+}
+
+//https:www.walopcexpert.blogspot.com 
+function levenshteinDistance(a, b) {
+    const matrix = Array(b.length + 1).fill(0).map(() => Array(a.length + 1).fill(0));
+
+    for (let i = 1; i <= b.length; i++) {
+        matrix[i][0] = i;
+    }
+
+    for (let j = 1; j <= a.length; j++) {
+        matrix[0][j] = j;
+    }
+
+    for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+            if (b[i - 1] === a[j - 1]) {
+                matrix[i][j] = matrix[i - 1][j - 1];
+            } else {
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j - 1] + 1,
+                    matrix[i][j - 1] + 1,
+                    matrix[i - 1][j] + 1
+                );
+            }
+        }
+    }
+
+    return matrix[b.length][a.length];
+}
+
+//https:www.walopcexpert.blogspot.com 
+function lcs(a, b) {
+    const matrix = Array(b.length + 1).fill(0).map(() => Array(a.length + 1).fill(0));
+
+    for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+            if (b[i - 1] === a[j - 1]) {
+                matrix[i][j] = matrix[i - 1][j - 1] + 1;
+            } else {
+                matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
+            }
+        }
+    }
+
+    return matrix[b.length][a.length];
+}
+function updateTotalTime() {
+    if (!isStopped) {
+        totalListeningTime++;
+        document.getElementById('timeParagraph').textContent = `Total Time: ${totalListeningTime} seconds`;
+        currentTime = totalListeningTime; 
+    }
+}
+
+
+function startTimer() {
+    if (!timerInterval) {
+        timerInterval = setInterval(updateTotalTime, 1000);
+    }
+}
+
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
+
+
+
+function runSpeechRecog() {
+    output.innerHTML = "";
+    wordCount = 0;
+    totalListeningTime = 0;
+    output.classList.remove('hide');
+
+    recognition.onstart = () => {
+        console.log("Speech recognition started.");
+        startTimer();
+    };
+
+    recognition.onresult = (event) => {
+        console.log("onresult event triggered.");
+        for (let i = lastProcessedResultIndex + 1; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript.trim();
+            console.log(`New transcript result: ${transcript}`);
+
+            // Check if the transcript is not empty
+            if (transcript) {
+                transcriptArray.push(transcript);
+            }
+        }
+
+        lastProcessedResultIndex = event.results.length - 1;
+
+        currentTranscript = transcriptArray.join(" "); 
+        const currentSentence = event.results[event.results.length - 1][0].transcript.trim();
+        currentWordCount = currentSentence.split(' ').filter(word => word.trim()).length;
+
+        console.log(`Word Count Updated: ${currentWordCount}`);
+
+        checkSentenceMatch(); 
+        calculateWPM(); 
+
+
+        output.innerHTML = currentTranscript;
+        document.getElementById('sentence-count').textContent = `Correct Sentences: ${correctSentenceCount}`;
+        document.getElementById('correct-word-count').textContent = `Correct Word Count: ${correctWordCount}`;
+        document.getElementById('wpm').textContent = `WPM: ${wordsPerMinute}`;
+    };
+
+    recognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+    };
+
+    recognition.onspeechend = () => {
+        console.log("Speech segment ended.");
+        recognition.stop();
+        if (!isStopped) {
+            recognition.start();
+        }
+    };
+
+    recognition.onend = () => {
+        console.log("Speech recognition ended.");
+        if (!isStopped) {
+            stopTimer();
+            recognition.start(); 
+            startTimer();
+        }
+    };
+
+    recognition.start();
+    isStopped = false;
+}
+//https:www.walopcexpert.blogspot.com 
+function stopSpeechRecog() {
+    recognition.stop();
+    isStopped = true;
+    stopTimer();
+
+    const finalTranscript = transcriptArray.length > 0 ? transcriptArray.join(" ") : "";
+    document.getElementById('output').textContent = finalTranscript;
+
+    console.log("Speech recognition stopped.");
+    console.log("Final Transcript:", finalTranscript);
+}
+const questions = [
+  {
+    question: "What happened to Levy in the story?",
+    options: [
+      "He was found dead.",
+      "He was run over by a train.",
+      "He was interviewed on television.",
+      "He was left alone by his children."
+    ],
+    correctAnswer: "MQ==" 
+  },
+  {
+    question: "How do people around Levy respond to his incident?",
+    options: [
+      "Levy was gravely pitied and was left the care of strangers.",
+      "Levy was given treatment by the best doctors in the country.",
+      "Levy's friends and relatives showered him with love, care, and concern.",
+      "Levy was interviewed on television and was provided with enough care."
+    ],
+    correctAnswer: "Mg==" 
+  },
+  {
+    question: "What is Levy’s goal in life?",
+    options: [
+      "To live a normal life.",
+      "To fight for love and justice.",
+      "To inspire people who are struggling.",
+      "To refuse all help relative to technology."
+    ],
+    correctAnswer: "Mg==" 
+  },
+  {
+    question: "Which of the following characteristics mirrors this?",
+    options: [
+      "faithfulness",
+      "firmness",
+      "intelligence",
+      "willpower"
+    ],
+    correctAnswer: "Mw==" 
+  },
+  {
+    question: "Which of the following statements proved that Levy’s life testimony can be a source of inspiration?",
+    options: [
+      "Levy refused all the help he could get and struggled on his own.",
+      "Levy was well-loved and cared for by all the people around him.",
+      "Levy used up all his savings and traveled alone after losing his limbs.",
+      "Levy did not give up on living even after his wife left and he lost his limbs."
+    ],
+    correctAnswer: "Mw==" 
+  }
+];
+
+//https:www.walopcexpert.blogspot.com 
+function generateEncodedValues() {
+  questions.forEach((question) => {
+    const encodedValues = [];
+    for (let i = 0; i < question.options.length; i++) {
+      encodedValues.push(`X${String.fromCharCode(65 + i)}ACD`); //https:www.walopcexpert.blogspot.com 
+    }
+    question.encodedValues = encodedValues;
+  });
+}
+
+generateEncodedValues();
+
+//https:www.walopcexpert.blogspot.com 
+function decodeBase64(encodedString) {
+  return atob(encodedString);
+}
+
+let currentQuestionIndex = 0;
+let selectedAnswers = []; 
+let quizScore = 0; 
+
+function displayQuestion() {
+  const questionContainer = document.getElementById("question-container");
+  questionContainer.innerHTML = "";
+
+  const question = questions[currentQuestionIndex];
+  const questionElement = document.createElement("p");
+  questionElement.textContent = question.question;
+  questionContainer.appendChild(questionElement);
+
+  const optionsElement = document.createElement("div");
+  question.options.forEach((option, index) => {
+    const optionElement = document.createElement("label");
+    optionElement.innerHTML = `<input type="radio" name="question${currentQuestionIndex + 1}" value="${question.encodedValues[index]}">${option}`;
+    optionsElement.appendChild(optionElement);
+  });
+  questionContainer.appendChild(optionsElement);
+}
+
+let maxQuestionNumber = questions.length;
+
+function nextQuestion() {
+  // Check if an answer is selected for the current question
+  const selectedAnswer = document.querySelector(`input[name="question${currentQuestionIndex + 1}"]:checked`);
+  if (selectedAnswer) {
+    selectedAnswers.push(selectedAnswer.value); 
+  }
+
+  // Move to the next question
+  currentQuestionIndex++;
+
+  // Display the next question if there are more questions
+  if (currentQuestionIndex < maxQuestionNumber) {
+    displayQuestion();
+  }
+
+  // If we are at the last question, change the button text to "Results"
+  if (currentQuestionIndex === maxQuestionNumber - 1) {
+    document.getElementById("next-button").style.display = "none";
+    document.getElementById("submit-button").style.display = "block";
+ }
+
+  // When all questions have been answered, hide the "Next" button and show the "Submit" button
+  if (currentQuestionIndex === maxQuestionNumber) {
+    document.getElementById("submit-button").style.display = "block";
+    document.getElementById("submit-button").textContent = "Results";
+  }
+}
+function submitQuiz() {
+  let score = 0;
+  const totalQuestions = questions.length;
+
+  for (let i = 0; i < totalQuestions; i++) {
+    const selectedAnswer = selectedAnswers[i];
+    const correctAnswerIndex = parseInt(decodeBase64(questions[i].correctAnswer));
+    const correctAnswer = questions[i].encodedValues[correctAnswerIndex];
+
+//https:www.walopcexpert.blogspot.com 
+    if (selectedAnswer === correctAnswer) {
+      score++;
+    }
+  }
+  console.log(`Your final score is: ${score} out of ${totalQuestions}`);
+  quizScore = score; 
+  const resultMessage = `You got ${score} out of ${totalQuestions} correct.`;
+  document.getElementById('quizResult').textContent = resultMessage;
+  document.getElementById('quizResult').classList.remove('hide');
+  document.getElementById('quizSection').style.display = 'none';  
+  document.getElementById('qresults').style.display = 'block';  
+}
+
+displayQuestion();
+
+function finish() {
+const lrn = document.getElementById('lrn')?.value || 'SirWalo';
+const category = document.getElementById('category')?.value || 'SirWalo';
+const district = document.getElementById('district')?.value || 'SirWalo';
+const schlid = document.getElementById('schlid')?.value || 'SirWalo';
+const gradelvl = document.getElementById('gradelvl')?.value || 'SirWalo';
+const section = document.getElementById('section')?.value || 'SirWalo';
+const sex = document.querySelector('input[name="sex"]:checked')?.value || 'Not Specified';
+
+const data = `
+LRN: ${lrn}
+District: ${category}
+District: ${district}
+School ID: ${schlid}
+Grade Level: ${gradelvl}
+Section: ${section}
+Sex: ${sex}
+Score: ${quizScore}
+Word: ${currentTranscript}
+Time: ${currentTime}
+Correct Sentences: ${correctSentenceCount}
+Original Word Count: ${originalWords.length}
+Correct Word Count: ${correctWordCount}
+Correct Words: ${correctWords.join(', ')}
+Mispronounced Word Count: ${mispronouncedWords.length}
+Mispronounced Words: ${mispronouncedWords.join(', ')}
+WPM: ${wordsPerMinute}
+`;
+console.log('Data to Save:', data);
+
+const sanitize = (value) => value?.replace(/[^a-zA-Z0-9-_]/g, '_') || 'SirWalo';
+const fileName = `${sanitize(lrn)}_${sanitize(category)}_${sanitize(district)}_${sanitize(schlid)}_${sanitize(section)}_${sanitize(gradelvl)}.txt`;
+
+const blob = new Blob([data], { type: 'text/plain' });
+const link = document.createElement('a');
+link.href = URL.createObjectURL(blob);
+link.download = fileName;
+link.click();
+URL.revokeObjectURL(link.href);
+
+alert("Please upload the created file");
+
+if (category && district && schlid) {
+// Construct the dynamic URL
+const url = `https://Erlhan.short.gy/${category}/${district}/${schlid}`;
+window.open(url, '_blank'); // Open the constructed URL in a new tab
+} else {
+// Alert if any field is empty
+alert("Your Inputted School ID is not in the List!");
+}
+
+}
+</script>
+</body>
+</html>
